@@ -28,9 +28,9 @@ runs:
   using: 'docker'
   image: 'Dockerfile'
   args:
-    - ${{ inputs.base-image }}
-    - ${{ inputs.image }}
-    - ${{ inputs.base-reg-username }}
-    - ${{ inputs.base-reg-password }}
-    - ${{ inputs.image-reg-username }}
-    - ${{ inputs.image-reg-password }}
+    - --base-image ${{ inputs.base-image }}
+    - --image ${{ inputs.image }}
+    - --base-reg-username ${{ inputs.base-reg-username }}
+    - --base-reg-password ${{ inputs.base-reg-password }}
+    - --image-reg-username ${{ inputs.image-reg-username }}
+    - --image-reg-password ${{ inputs.image-reg-password }}
