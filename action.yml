@@ -8,10 +8,16 @@ inputs:
   image:
     description: "Container image"
     required: true
-  registry-username:
+  base-reg-username:
+    description: "Base Image Container registry username"
+    required: false
+  base-reg-password:
+    description: "Base Image Container registry password"
+    required: false
+  image-reg-username:
     description: "Container registry username"
     required: false
-  registry-password:
+  image-reg-password:
     description: "Container registry password"
     required: false
 outputs:
@@ -24,5 +30,7 @@ runs:
   args:
     - ${{ inputs.base-image }}
     - ${{ inputs.image }}
-    - ${{ inputs.registry-username }}
-    - ${{ inputs.registry-password }}
+    - ${{ inputs.base-reg-username }}
+    - ${{ inputs.base-reg-password }}
+    - ${{ inputs.image-reg-username }}
+    - ${{ inputs.image-reg-password }}
