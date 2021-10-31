@@ -2,15 +2,27 @@
 name: 'Container Image Updater'
 description: 'Github action to notify if the container image needs update based on the baseimage change'
 inputs:
-  who-to-greet:  # id of input
-    description: 'Who to greet'
+  base-image:
+    description: "Container Base image"
     required: true
-    default: 'World'
+  image:
+    description: "Container image"
+    required: true
+  registry-username:
+    description: "Container registry username"
+    required: false
+  registry-password:
+    description: "Container registry password"
+    required: false
 outputs:
-  time: # id of output
-    description: 'The time we greeted you'
+  needs-update:
+    description: 'Needs the update or not(true or false)'
+
 runs:
   using: 'docker'
   image: 'Dockerfile'
   args:
-    - ${{ inputs.who-to-greet }}
+    - ${{ inputs.base-image }}
+    - ${{ inputs.image }}
+    - ${{ inputs.registry-username }}
+    - ${{ inputs.registry-password }}
