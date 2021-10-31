@@ -1,6 +1,6 @@
 # action.yml
-name: 'Hello World'
-description: 'Greet someone and record the time'
+name: 'Container Image Updater'
+description: 'Github action to notify if the container image needs update based on the baseimage change'
 inputs:
   who-to-greet:  # id of input
     description: 'Who to greet'
