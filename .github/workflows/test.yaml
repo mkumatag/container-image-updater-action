@@ -1,0 +1,23 @@
+name: Test
+
+on: [push]
+
+jobs:
+  test:
+    name: Test-Action
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+      - name: Test Action
+        id: test
+        uses: ./
+        with:
+          base-image: alpine:3.13
+          image: alpine:3.14
+      - name: Get Test Output
+        run: echo "Workflow Docker Image ${{ steps.test.outputs.needs-update }}"
+      - name: Check value
+        run: echo "Needs updating"
+        if: steps.test.outputs.needs-update == 'true'

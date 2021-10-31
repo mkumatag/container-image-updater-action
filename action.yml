@@ -1,0 +1,42 @@
+# action.yml
+name: 'Container Image Updater'
+description: 'Github action to notify if the container image needs update based on the baseimage change'
+inputs:
+  base-image:
+    description: "Container Base image"
+    required: true
+  image:
+    description: "Container image"
+    required: true
+  base-reg-username:
+    description: "Base Image Container registry username"
+    required: false
+  base-reg-password:
+    description: "Base Image Container registry password"
+    required: false
+  image-reg-username:
+    description: "Container registry username"
+    required: false
+  image-reg-password:
+    description: "Container registry password"
+    required: false
+outputs:
+  needs-update:
+    description: 'Needs the update or not(true or false)'
+
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  args:
+    - --base-image
+    - ${{ inputs.base-image }}
+    - --image
+    - ${{ inputs.image }}
+    - --base-reg-username
+    - ${{ inputs.base-reg-username }}
+    - --base-reg-password
+    - ${{ inputs.base-reg-password }}
+    - --image-reg-username
+    - ${{ inputs.image-reg-username }}
+    - --image-reg-password
+    - ${{ inputs.image-reg-password }}
