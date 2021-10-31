@@ -24,7 +24,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Read branch.properties
+      - name: Read builder-version
         id: builder
         uses: juliangruber/read-file-action@v1
         with:
