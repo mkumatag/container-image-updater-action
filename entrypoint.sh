@@ -1,4 +1,5 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
+
 
 set -o pipefail
 set -e
@@ -20,7 +21,7 @@ get_layers(){
   username=$2
   password=$3
   cmd="manifest-tool"
-  if [[ ! (-z "${username}" && -z "${password}") ]]; then
+  if [ -n "${username}" ] && [ -n "${password}" ]; then
     cmd="${cmd} --username=${username} --password=${password}"
   fi
 
