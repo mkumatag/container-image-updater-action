@@ -17,10 +17,11 @@ import (
 )
 
 var (
-	baseImage, image string
+	baseImage, image                                     string
 	baseImageRegistryUsername, baseImageRegistryPassword string
-	imageRegistryUsername, imageRegistryPassword string
+	imageRegistryUsername, imageRegistryPassword         string
 )
+
 func init() {
 	flag.StringVar(&baseImage, "base-image", "", "Base Image")
 	flag.StringVar(&image, "image", "", "Image")
@@ -33,19 +34,28 @@ func init() {
 
 func main() {
 	if baseImage == "" || image == "" {
-		logrus.Fatal("baseImage and image should be set")
+		fmt.Println("::error ::baseImage and image should be set")
+		return
 	}
-	baseLayers := parseImage(baseImage, baseImageRegistryUsername, baseImageRegistryPassword)
-	imageLayers := parseImage(image, imageRegistryUsername, imageRegistryPassword)
+	baseLayers, err := parseImage(baseImage, baseImageRegistryUsername, baseImageRegistryPassword)
+	if err != nil {
+		fmt.Printf("::error ::failed to get layers for the base image, err: %v\n", err)
+		return
+	}
+	imageLayers, err := parseImage(image, imageRegistryUsername, imageRegistryPassword)
+	if err != nil {
+		fmt.Printf("::error ::failed to get layers for the image, err: %v\n", err)
+		return
+	}
 	for _, imageLayer := range imageLayers {
 		found := false
 		for _, baseLayer := range baseLayers {
 			found = subset(baseLayer, imageLayer)
-			if found{
+			if found {
 				break
 			}
 		}
-		if ! found {
+		if !found {
 			fmt.Println("::set-output name=needs-update::true")
 			return
 		}
@@ -65,7 +75,7 @@ func subset(a, b []digest.Digest) bool {
 	return true
 }
 
-func parseImage(name, username, password string) (digests [][]digest.Digest){
+func parseImage(name, username, password string) (digests [][]digest.Digest, err error) {
 	resolver := util.NewResolver(username, password, false,
 		false)
 	memoryStore := store.NewMemoryStore()
@@ -75,7 +85,7 @@ func parseImage(name, username, password string) (digests [][]digest.Digest){
 	}
 	descriptor, err := registry.FetchDescriptor(resolver, memoryStore, imageRef)
 	if err != nil {
-		logrus.Error(err)
+		return nil, err
 	}
 
 	_, db, _ := memoryStore.Get(descriptor)
@@ -84,26 +94,26 @@ func parseImage(name, username, password string) (digests [][]digest.Digest){
 		// this is a multi-platform image descriptor; marshal to Index type
 		var idx ocispec.Index
 		if err := json.Unmarshal(db, &idx); err != nil {
-			logrus.Fatal(err)
+			return nil, err
 		}
 		digests, err = parseList(memoryStore, idx)
 		if err != nil {
-			logrus.Fatal("failed to parse the manifest list")
+			return nil, fmt.Errorf("failed to parse the manifest list: %w", err)
 		}
 	case ocispec.MediaTypeImageManifest, types.MediaTypeDockerSchema2Manifest:
 		var man ocispec.Manifest
 		if err := json.Unmarshal(db, &man); err != nil {
-			logrus.Fatal(err)
+			return nil, err
 		}
 		_, cb, _ := memoryStore.Get(man.Config)
 		var conf ocispec.Image
 		if err := json.Unmarshal(cb, &conf); err != nil {
-			logrus.Fatal(err)
+			return nil, err
 		}
 		dig := getDigests(man.Layers)
 		digests = append(digests, dig)
 	default:
-		logrus.Errorf("Unknown descriptor type: %s", descriptor.MediaType)
+		return nil, fmt.Errorf("unknown descriptor type: %s", descriptor.MediaType)
 	}
 	return
 }
