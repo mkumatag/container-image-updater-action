@@ -40,3 +40,6 @@ with:
   image-reg-username: someuser
   image-reg-password: somepassword
 ```
+
+## Blog:
+https://medium.com/@manjunathkumatagi/streamlining-docker-image-updates-monitoring-and-rebuilding-with-github-plugin-c244dc85fb6a
