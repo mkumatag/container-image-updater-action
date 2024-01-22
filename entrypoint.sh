@@ -52,7 +52,7 @@ image_base_layer=$(get_image_base_layer)
 found=$(echo "${base_layers}" | grep -c "${image_base_layer}")
 retval=$?
 if [ "$found" -gt 0 ]; then
-  echo "::set-output name=needs-update::false"
+  echo "needs-update=false" >> $GITHUB_OUTPUT
 else
-  echo "::set-output name=needs-update::true"
+  echo "needs-update=true" >> $GITHUB_OUTPUT
 fi
