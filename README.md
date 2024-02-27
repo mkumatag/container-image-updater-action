@@ -22,7 +22,7 @@ This action prints "true" if image is required to update based on the base image
 ### Public images
 
 ```yaml
-uses: mkumatag/container-image-updater-action@v1.0.5
+uses: mkumatag/container-image-updater-action@v1.0.6
 with:
   base-image: 'alpine:3.14'
   image: 'alpine:3.13'
@@ -31,7 +31,7 @@ with:
 ### Private images
 
 ```yaml
-uses: mkumatag/container-image-updater-action@v1.0.5
+uses: mkumatag/container-image-updater-action@v1.0.6
 with:
   base-image: 'alpine:3.14'
   image: 'alpine:3.13'
